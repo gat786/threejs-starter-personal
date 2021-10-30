@@ -10,7 +10,9 @@
   "source": "src/index.ts",
   "devDependencies": {
     "@types/three": "^0.133.1",
-    "parcel": "^2.0.0"
+    "dat.gui": "^0.7.7",
+    "parcel": "^2.0.0",
+    "react-refresh": "^0.10.0"
   },
   "dependencies": {
     "three": "^0.133.1"
