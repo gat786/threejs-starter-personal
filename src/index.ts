@@ -3,6 +3,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { BufferAttribute } from "three";
 import * as dat from "dat.gui";
 
+const raycaster = new THREE.Raycaster();
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
   75,
@@ -82,12 +83,30 @@ document.getElementById("board").replaceWith(renderer.domElement);
 
 new OrbitControls(camera, renderer.domElement);
 
+const mousePosition = {
+  x: undefined,
+  y: undefined,
+};
+
 const animate = () => {
   requestAnimationFrame(animate);
 
   // cube.rotation.x += 0.01;
 
   renderer.render(scene, camera);
+
+  raycaster.setFromCamera(mousePosition, camera);
+
+  const intersects = raycaster.intersectObject(planeMesh);
+
+  if (intersects.length > 0) {
+    console.log(`intersecting`);
+  }
 };
 
 animate();
+
+addEventListener("mousemove", (event) => {
+  mousePosition.x = (event.clientX / innerWidth) * 2 - 1;
+  mousePosition.y = -(event.clientY / innerHeight) * 2 + 1;
+});
