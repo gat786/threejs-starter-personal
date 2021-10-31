@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { BufferAttribute } from "three";
 import * as dat from "dat.gui";
 
@@ -51,25 +52,18 @@ function updateCompleteMesh() {
   );
 }
 
-gui.add(world.plane, "width", 1, 20).onChange(() => {
+function generatePlane() {
   updateCompleteMesh();
   updateZMesh();
-});
+}
 
-gui.add(world.plane, "height", 1, 20).onChange(() => {
-  updateCompleteMesh();
-  updateZMesh();
-});
+gui.add(world.plane, "width", 1, 20).onChange(generatePlane);
 
-gui.add(world.plane, "heightSegments", 1, 20).onChange(() => {
-  updateCompleteMesh();
-  updateZMesh();
-});
+gui.add(world.plane, "height", 1, 20).onChange(generatePlane);
 
-gui.add(world.plane, "widthSegments", 1, 20).onChange(() => {
-  updateCompleteMesh();
-  updateZMesh();
-});
+gui.add(world.plane, "heightSegments", 1, 50).onChange(generatePlane);
+
+gui.add(world.plane, "widthSegments", 1, 50).onChange(generatePlane);
 
 const light = new THREE.PointLight(0xffffff, 1);
 light.position.set(0, 0, 10);
@@ -85,6 +79,8 @@ renderer.setPixelRatio(window.devicePixelRatio);
 
 // replace the canvas in the body with renderer.domElement
 document.getElementById("board").replaceWith(renderer.domElement);
+
+new OrbitControls(camera, renderer.domElement);
 
 const animate = () => {
   requestAnimationFrame(animate);

@@ -4220,6 +4220,11 @@ terser@^5.2.0, terser@^5.8.0:
     source-map "~0.7.2"
     source-map-support "~0.5.20"
 
+three-orbitcontrols@^2.110.3:
+  version "2.110.3"
+  resolved "https://registry.yarnpkg.com/three-orbitcontrols/-/three-orbitcontrols-2.110.3.tgz#ca9c91d5ec2f4731a1140acf2ff0281e15988edf"
+  integrity sha512-BNNbksJwbN3/MmT0X/gjz5ZCchm7bjk26SUdtJYRxfEYjDfkb/0PeUTHE/KuyJ5vb/owK3mojyy3vcqDx99sRA==
+
 three@^0.133.1:
   version "0.133.1"
   resolved "https://registry.yarnpkg.com/three/-/three-0.133.1.tgz#5606f4817d67a09d9212d4ccbd6826564774f8f4"
