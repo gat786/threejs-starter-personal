@@ -51,12 +51,12 @@ function updateZMesh(args: { generateRandomValues?: boolean }) {
       const y = array[i + 1];
       const z = array[i + 2];
 
-      array[i] = x + (Math.random() - 0.5);
-      array[i + 1] = y + (Math.random() - 0.5);
+      array[i] = x + (Math.random() - 0.5) * 3;
+      array[i + 1] = y + (Math.random() - 0.5) * 3;
       array[i + 2] = z + Math.random() * 3;
     }
     if (args?.generateRandomValues) {
-      randomValues.push(Math.random() - 0.5);
+      randomValues.push(Math.random() * Math.PI * 2);
     }
   }
 }
@@ -144,10 +144,10 @@ const animate = () => {
 
   for (let i = 0; i < array.length; i += 3) {
     // x coordinate
-    array[i] = originalPosition[i] + Math.cos(frame + randomValues[i]) * 0.003;
+    array[i] = originalPosition[i] + Math.cos(frame + randomValues[i]) * 0.01;
     // y coordinate
     array[i + 1] =
-      originalPosition[i + 1] + Math.sin(frame + randomValues[i + 1]) * 0.003;
+      originalPosition[i + 1] + Math.sin(frame + randomValues[i + 1]) * 0.01;
   }
 
   planeMesh.geometry.attributes.position.needsUpdate = true;
@@ -214,4 +214,10 @@ animate();
 addEventListener("mousemove", (event) => {
   mousePosition.x = (event.clientX / innerWidth) * 2 - 1;
   mousePosition.y = -(event.clientY / innerHeight) * 2 + 1;
+});
+
+addEventListener("resize", (event) => {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.innerWidth / window.innerHeight);
+  renderer.autoClear = true;
 });

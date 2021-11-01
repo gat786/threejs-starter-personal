@@ -6,16 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My First Parcel App</title>
     <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
     <script type="module" src="index.ts"></script>
     <style>
       * {
         padding: 0px;
         margin: 0px;
         box-sizing: border-box;
+        color: white;
       }
     </style>
   </head>
   <body>
-    <canvas id="board"></canvas>
+    <div class="relative">
+      <canvas id="board" class="absolute h-screen w-screen"></canvas>
+
+      <div class="absolute top-0 h-screen w-screen">
+        <div class="flex flex-col gap-2 h-full items-center justify-center">
+          <h1 class="font-bold font-exo text-4xl m-4">Ganesh Tiwari</h1>
+          <p>Software Engineer from Mumbai, India</p>
+          <p>
+            Currently working at <a href="https://azure.styava.dev">Styava</a>
+            as a UI Engineer
+          </p>
+          <p>
+            You can check out my portfolio <a href="https://gats.dev">here</a>
+          </p>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
