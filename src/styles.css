@@ -3,3 +3,11 @@
 .font-exo {
   font-family: "Exo 2", sans-serif;
 }
+
+.middle-screen{
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    margin: auto;
+}
