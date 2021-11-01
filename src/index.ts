@@ -14,9 +14,10 @@ const camera = new THREE.PerspectiveCamera(
 
 const planeGeometry = new THREE.PlaneGeometry(10, 10, 10, 10);
 const planeMaterial = new THREE.MeshPhongMaterial({
-  color: 0xff0000,
+  // color: 0xff0000,
   side: THREE.DoubleSide,
   flatShading: true,
+  vertexColors: true,
 });
 const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
 scene.add(planeMesh);
@@ -53,9 +54,23 @@ function updateCompleteMesh() {
   );
 }
 
+function updateColors() {
+  const colors = [];
+
+  for (let i = 0; i < planeMesh.geometry.attributes.position.count; i++) {
+    colors.push(0, 0.19, 0.4);
+  }
+
+  planeMesh.geometry.setAttribute(
+    "color",
+    new THREE.BufferAttribute(new Float32Array(colors), 3)
+  );
+}
+
 function generatePlane() {
   updateCompleteMesh();
   updateZMesh();
+  updateColors();
 }
 
 gui.add(world.plane, "width", 1, 20).onChange(generatePlane);
@@ -73,6 +88,8 @@ scene.add(light);
 camera.position.z = 10;
 
 updateZMesh();
+
+updateColors();
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -100,7 +117,22 @@ const animate = () => {
   const intersects = raycaster.intersectObject(planeMesh);
 
   if (intersects.length > 0) {
-    console.log(`intersecting`);
+    const { color } = (intersects[0].object as THREE.Mesh).geometry.attributes;
+
+    color.setX(intersects[0]?.face?.a, 0.1);
+    color.setY(intersects[0]?.face?.a, 0.5);
+    color.setZ(intersects[0]?.face?.a, 1);
+
+    // color.setY(intersects[0]?.face?.a, 0);
+    color.setX(intersects[0]?.face?.b, 0.1);
+    color.setY(intersects[0]?.face?.b, 0.5);
+    color.setZ(intersects[0]?.face?.b, 1);
+
+    color.setX(intersects[0]?.face?.c, 0.1);
+    color.setY(intersects[0]?.face?.c, 0.5);
+    color.setZ(intersects[0]?.face?.c, 1);
+    (intersects[0].object as THREE.Mesh).geometry.attributes.color.needsUpdate =
+      true;
   }
 };
 
