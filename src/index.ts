@@ -13,37 +13,57 @@ const camera = new THREE.PerspectiveCamera(
   1000
 );
 
-const planeGeometry = new THREE.PlaneGeometry(10, 10, 10, 10);
+const gui = new dat.GUI();
+const world = {
+  plane: {
+    width: 400,
+    height: 400,
+    heightSegments: 50,
+    widthSegments: 50,
+  },
+};
+
+const planeGeometry = new THREE.PlaneGeometry(
+  world.plane.width,
+  world.plane.height,
+  world.plane.widthSegments,
+  world.plane.heightSegments
+);
+
 const planeMaterial = new THREE.MeshPhongMaterial({
   // color: 0xff0000,
   side: THREE.DoubleSide,
   flatShading: true,
   vertexColors: true,
 });
+
 const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
 scene.add(planeMesh);
 
-const gui = new dat.GUI();
-const world = {
-  plane: {
-    width: 10,
-    height: 10,
-    heightSegments: 10,
-    widthSegments: 10,
-  },
-};
+let randomValues = [];
 
-function updateZMesh() {
-  const { array } = planeMesh.geometry.attributes.position;
+function updateZMesh(args: { generateRandomValues?: boolean }) {
+  const { array } = planeMesh.geometry.attributes.position as any;
 
-  for (let i = 0; i < array.length; i += 3) {
-    const x = array[i];
-    const y = array[i + 1];
-    const z = array[i + 2];
+  for (let i = 0; i < array.length; i++) {
+    if (i % 3 === 0) {
+      const x = array[i];
+      const y = array[i + 1];
+      const z = array[i + 2];
 
-    planeMesh.geometry.attributes.position.setZ(i + 2, z + Math.random());
+      array[i] = x + (Math.random() - 0.5);
+      array[i + 1] = y + (Math.random() - 0.5);
+      array[i + 2] = z + Math.random() * 3;
+    }
+    if (args?.generateRandomValues) {
+      randomValues.push(Math.random() - 0.5);
+    }
   }
 }
+
+// create original position array equal to position array
+(planeMesh.geometry.attributes.position as any).originalPosition =
+  planeMesh.geometry.attributes.position.array;
 
 function updateCompleteMesh() {
   planeMesh.geometry.dispose();
@@ -70,25 +90,30 @@ function updateColors() {
 
 function generatePlane() {
   updateCompleteMesh();
-  updateZMesh();
+  updateZMesh({});
   updateColors();
 }
 
-gui.add(world.plane, "width", 1, 20).onChange(generatePlane);
+gui.add(world.plane, "width", 1, 600).onChange(generatePlane);
 
-gui.add(world.plane, "height", 1, 20).onChange(generatePlane);
+gui.add(world.plane, "height", 1, 600).onChange(generatePlane);
 
-gui.add(world.plane, "heightSegments", 1, 50).onChange(generatePlane);
+gui.add(world.plane, "heightSegments", 1, 100).onChange(generatePlane);
 
-gui.add(world.plane, "widthSegments", 1, 50).onChange(generatePlane);
+gui.add(world.plane, "widthSegments", 1, 100).onChange(generatePlane);
 
 const light = new THREE.PointLight(0xffffff, 1);
-light.position.set(0, 0, 10);
+light.position.set(0, 0, 40);
 scene.add(light);
 
-camera.position.z = 10;
+camera.position.z = 50;
 
-updateZMesh();
+updateZMesh({ generateRandomValues: true });
+
+// append the generated random values to planeMesh
+(planeMesh.geometry.attributes.position as any).randomValues = randomValues;
+
+console.log(planeMesh.geometry.attributes.position);
 
 updateColors();
 
@@ -106,15 +131,29 @@ const mousePosition = {
   y: undefined,
 };
 
+let frame = 0;
+
 const animate = () => {
   requestAnimationFrame(animate);
-
-  // cube.rotation.x += 0.01;
-
   renderer.render(scene, camera);
 
-  raycaster.setFromCamera(mousePosition, camera);
+  frame += 0.01;
 
+  const { array, originalPosition, randomValues } = planeMesh.geometry
+    .attributes.position as any;
+
+  for (let i = 0; i < array.length; i += 3) {
+    // x coordinate
+    array[i] = originalPosition[i] + Math.cos(frame + randomValues[i]) * 0.003;
+    // y coordinate
+    array[i + 1] =
+      originalPosition[i + 1] + Math.sin(frame + randomValues[i + 1]) * 0.003;
+  }
+
+  planeMesh.geometry.attributes.position.needsUpdate = true;
+
+  // raycaster add hover color and remove on hoverend
+  raycaster.setFromCamera(mousePosition, camera);
   const intersects = raycaster.intersectObject(planeMesh);
 
   if (intersects.length > 0) {
