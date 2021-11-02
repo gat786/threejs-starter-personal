@@ -1,21 +1,20 @@
 {
   "name": "threejs-starter-personal",
   "version": "1.0.0",
-  "main": "index.js",
   "license": "MIT",
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "parcel build"
+    "build": "rm -rf ./dist/ && parcel build src/index.html --public-url /"
   },
   "source": "src/index.ts",
   "devDependencies": {
     "@types/three": "^0.133.1",
-    "dat.gui": "^0.7.7",
     "parcel": "^2.0.0",
     "react-refresh": "^0.10.0"
   },
   "dependencies": {
     "gsap": "^3.8.0",
+    "dat.gui": "^0.7.7",
     "three": "^0.133.1",
     "three-orbitcontrols": "^2.110.3"
   }
